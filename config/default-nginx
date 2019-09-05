@@ -5,7 +5,7 @@ server {
 
     sendfile off;
 
-    root /var/www/web;
+    root /var/www/current/web;
     index app_dev.php index.html;
 
     location / {

@@ -72,12 +72,12 @@ RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Add application
-RUN rm -rf /var/www
-RUN mkdir -p /var/www
+RUN rm -rf /var/www/current
+RUN mkdir -p /var/www/current
 
-VOLUME /var/www
+VOLUME /var/www/current
 
-WORKDIR /var/www
+WORKDIR /var/www/current
 
 RUN rm -rf /var/cache/apk
 RUN rm -rf /root/.composer/cache
