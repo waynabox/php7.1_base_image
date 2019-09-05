@@ -1,11 +1,9 @@
 FROM alpine:3.7
 MAINTAINER Daniel Jimenez <dani.jimenez@waynabox.com>
 
-#set timezone => Turkey - Istanbul
-#https://wiki.alpinelinux.org/wiki/Setting_the_timezone
 RUN apk --update add tzdata --repository http://dl-4.alpinelinux.org/alpine/edge/testing
-RUN cp /usr/share/zoneinfo/Europe/Istanbul /etc/localtime
-RUN echo "Europe/Istanbul" >  /etc/timezone
+RUN cp /usr/share/zoneinfo/Europe/Madrid /etc/localtime
+RUN echo "Europe/Madrid" >  /etc/timezone
 RUN apk del tzdata
 RUN date
 
@@ -47,14 +45,6 @@ RUN apk --update add \
     php7-ldap \
     bash
 
-
-
-
-# Composer
-RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
-
-# prestissimo - composer parallel install plugin
-RUN composer global require "hirak/prestissimo:^0.3"
 
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
