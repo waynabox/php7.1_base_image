@@ -1,46 +1,86 @@
-FROM alpine:3.10
-LABEL Maintainer="Tim de Pater <code@trafex.nl>" \
-      Description="Lightweight container with Nginx 1.16 & PHP-FPM 7.3 based on Alpine Linux."
+FROM alpine:3.7
+MAINTAINER Daniel Jimenez <dani.jimenez@waynabox.com>
+
+#set timezone => Turkey - Istanbul
+#https://wiki.alpinelinux.org/wiki/Setting_the_timezone
+RUN apk --update add tzdata --repository http://dl-4.alpinelinux.org/alpine/edge/testing
+RUN cp /usr/share/zoneinfo/Europe/Istanbul /etc/localtime
+RUN echo "Europe/Istanbul" >  /etc/timezone
+RUN apk del tzdata
+RUN date
 
 # Install packages
-RUN apk --no-cache add php7 php7-fpm php7-mysqli php7-json php7-openssl php7-curl \
-    php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session \
-    php7-mbstring php7-gd nginx supervisor curl php7-bcmath php7-mcrypt php7-opcache \
-    php7-imap php7-xdebug php7-zip php7-yaml
+RUN apk --update add \
+    php7 \
+    php7-fpm \
+    nginx \
+    supervisor \
+    git \
+    curl \
+    unzip \
+    nano \
+    wget \
+    gzip \
+    php7-pcntl \
+    php7-session \
+    php7-gd \
+    php7-mcrypt \
+    php7-mbstring \
+    php7-json \
+    php7-xml \
+    php7-curl \
+    php7-mysqli \
+    php7-pdo \
+    php7-pdo_mysql \
+    php7-iconv \
+    php7-dom \
+    php7-opcache \
+    php7-phar \
+    openssl \
+    php7-openssl \
+    php7-tokenizer \
+    php7-xmlwriter \
+    php7-simplexml \
+    php7-ctype \
+    zlib \
+    php7-zlib \
+    php7-ldap \
+    bash
+
+
+
+
+# Composer
+RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+
+# prestissimo - composer parallel install plugin
+RUN composer global require "hirak/prestissimo:^0.3"
 
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
 
 # Configure PHP-FPM
-COPY config/fpm-pool.conf /etc/php7/php-fpm.d/www.conf
-COPY config/php.ini /etc/php7/conf.d/zzz_custom.ini
+COPY config/fpm-pool.conf /etc/php7/php-fpm.d/docker_custom.conf
+COPY config/php.ini /etc/php7/conf.d/docker_custom.ini
+
+# copy default nginx conf
+COPY config/default-nginx /etc/nginx/sites-available/default
+WORKDIR /etc/nginx/sites-enabled/
+RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # Configure supervisord
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Make sure files/folders needed by the processes are accessable when they run under the nobody user
-RUN chown -R nobody.nobody /run && \
-  chown -R nobody.nobody /var/lib/nginx && \
-  chown -R nobody.nobody /var/tmp/nginx && \
-  chown -R nobody.nobody /var/log/nginx
-
-# Setup document root
-RUN mkdir -p /var/www/current
-
-# Make the document root a volume
-VOLUME /var/www/current
-
-# Switch to use a non-root user from here on
-USER nobody
-
 # Add application
-WORKDIR /var/www/current
+RUN rm -rf /var/www
+RUN mkdir -p /var/www
 
-# Expose the port nginx is reachable on
+VOLUME /var/www
+
+WORKDIR /var/www
+
+RUN rm -rf /var/cache/apk
+RUN rm -rf /root/.composer/cache
+
 EXPOSE 8080
-
-# Let supervisord start nginx & php-fpm
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
-# Configure a healthcheck to validate that everything is up&running
-HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/fpm-ping
