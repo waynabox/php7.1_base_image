@@ -49,6 +49,10 @@ RUN apk --update add \
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
 
+
+RUN mkdir -p /usr/local/bin
+COPY scripts/*.* /usr/local/bin/
+
 # Configure PHP-FPM
 COPY config/fpm-pool.conf /etc/php7/php-fpm.d/docker_custom.conf
 COPY config/php.ini /etc/php7/conf.d/docker_custom.ini
@@ -73,4 +77,4 @@ RUN rm -rf /var/cache/apk
 RUN rm -rf /root/.composer/cache
 
 EXPOSE 8080
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+ENTRYPOINT ["/bin/bash", "/usr/local/bin/start.sh"]
