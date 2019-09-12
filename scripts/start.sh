@@ -22,6 +22,8 @@ echo "Installing composer"
 
 echo "Deleting symfony cache"
 rm -rf /var/www/current/var/cache/
+chown www-data:www-data /var/log/symfony/ -R
+chown www-data:www-data /var/cache/symfony/ -R
 
 echo "restarting services"
 sudo service php7.1-fpm start
