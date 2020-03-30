@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="536142d3-e739-4c5e-b2e2-92b12f8a0f85" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/scripts/php.ini" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/php.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/server.conf" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/server.conf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
