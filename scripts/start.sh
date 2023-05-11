@@ -18,7 +18,7 @@ echo "xdebug.remote_host=${XDEBUG_IP}" >> /etc/php/7.1/fpm/conf.d/20-xdebug.ini
 
 
 echo "Installing composer"
-/var/www/current/composer.phar install
+/var/www/current/composer.phar update -vvv
 
 echo "Deleting symfony cache"
 rm -rf /var/www/current/var/cache/
