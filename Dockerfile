@@ -45,9 +45,12 @@ RUN rm -f /etc/nginx/sites-available/default
 # PHP 7.x libs and tools
 #########################
 # Add to repository sources list
+
 RUN apt-get install software-properties-common
-RUN apt-get update && LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
-RUN apt-get update && LC_ALL=C.UTF-8 add-apt-repository ppa:jason.grammenos.agility/php
+RUN add-apt-repository ppa:ondrej/php
+RUN add-apt-repository ppa:jason.grammenos.agility/php
+RUN apt-get update
+
 
 # Update cache and install Nginx
 RUN apt-get update && apt-get install nginx -y && usermod -u 1000 www-data
