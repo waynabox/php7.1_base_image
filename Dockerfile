@@ -47,8 +47,8 @@ RUN rm -f /etc/nginx/sites-available/default
 # Add to repository sources list
 
 RUN apt-get install software-properties-common
-RUN add-apt-repository ppa:ondrej/php
-RUN add-apt-repository ppa:jason.grammenos.agility/php
+RUN LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
+RUN LC_ALL=C.UTF-8 add-apt-repository ppa:jason.grammenos.agility/php
 RUN apt-get update
 
 
