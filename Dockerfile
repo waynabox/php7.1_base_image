@@ -1,14 +1,14 @@
 # Pull from the ubuntu image
-FROM ubuntu:14.04
-
+FROM ubuntu:18.04
 # Set the author
 MAINTAINER Dani Jimenez <dani.jimenez@waynabox.com>
-
+#Tzdata package non-interactive
+ENV TZ=Europe/Madrid
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Update cache and install base packages
 RUN apt-get update && apt-get -y install \
    sudo \
    software-properties-common \
-   python-software-properties \
    debian-archive-keyring \
    wget \
    curl \
@@ -20,15 +20,11 @@ RUN apt-get update && apt-get -y install \
    build-essential \
    tcl8.5 \
    git
-
-
 # setting main user and adding it to sudoers
 RUN adduser www-data sudo
 RUN echo "www-data ALL=NOPASSWD: ALL" >>  /etc/sudoers
-
 # Download Nginx signing key
 RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com C300EE8C
-
 #########################
 # Nginx
 #########################
@@ -39,19 +35,14 @@ RUN apt-get update && apt-get install nginx -y && usermod -u 1000 www-data
 # remove default server if exists
 RUN unlink /etc/nginx/sites-enabled/default
 RUN rm -f /etc/nginx/sites-available/default
-
-
 #########################
 # PHP 7.x libs and tools
 #########################
 # Add to repository sources list
-
 RUN apt-get install software-properties-common
 RUN LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
 RUN LC_ALL=C.UTF-8 add-apt-repository ppa:jason.grammenos.agility/php
 RUN apt-get update
-
-
 # Update cache and install Nginx
 RUN apt-get update && apt-get install nginx -y && usermod -u 1000 www-data
 RUN apt-get update && apt-get install php7.1-fpm \
@@ -71,61 +62,38 @@ RUN apt-get update && apt-get install php7.1-fpm \
                                       php7.1-zip \
                                       php7.1-xml \
                                       php7.1-yaml -y
-
 RUN apt-get --purge autoremove -y
-
-
 RUN mkdir -p /usr/local/bin
 COPY scripts/*.* /usr/local/bin/
 RUN cp /usr/local/bin/nginx.conf /etc/nginx/
 RUN cp /usr/local/bin/php.ini /etc/php/7.1/fpm
-
 RUN sed -i -e "s/;listen.mode = 0660/listen.mode = 0750/g" /etc/php/7.1/fpm/pool.d/www.conf
 RUN sed -i -e "s/;pm.max_children = 5/pm.max_children = 10/g" /etc/php/7.1/fpm/pool.d/www.conf
 RUN find /etc/php/7.1/cli/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
-
-
 #########################
 # TIME ZONE
 #########################
 RUN rm /etc/localtime
 RUN ln -s /usr/share/zoneinfo/Europe/Madrid /etc/localtime
-
-
 #########################
 # CRON
 #########################
 RUN apt-get update && apt-get -y install cron
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
-
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
-
 USER root
-
 # Expose port 80
 EXPOSE 80
 EXPOSE 443
-
-
 # port needed by xdebug
 EXPOSE 9000
-
-
-
 # Mount volumes
 VOLUME /var/log/nginx/
 VOLUME /var/www/current
 VOLUME /usr/local/config
-
 # Set the current working directory
 WORKDIR /var/www/current
-
 # define entrypoint
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/start.sh"]
-
-
-
-
-
