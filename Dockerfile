@@ -77,6 +77,7 @@ RUN cp /usr/local/bin/nginx.conf /etc/nginx/
 RUN cp /usr/local/bin/php.ini /etc/php/7.1/fpm
 
 RUN sed -i -e "s/;listen.mode = 0660/listen.mode = 0750/g" /etc/php/7.1/fpm/pool.d/www.conf
+RUN sed -i -e "s/;pm.max_children = 5/pm.max_children = 10/g" /etc/php/7.1/fpm/pool.d/www.conf
 RUN find /etc/php/7.1/cli/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
 
 
