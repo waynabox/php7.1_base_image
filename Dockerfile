@@ -1,5 +1,5 @@
 # Pull from the ubuntu image
-FROM ubuntu:16.04
+FROM ubuntu:14.04
 
 # Set the author
 MAINTAINER Dani Jimenez <dani.jimenez@waynabox.com>
@@ -47,6 +47,7 @@ RUN rm -f /etc/nginx/sites-available/default
 # Add to repository sources list
 RUN apt-get install software-properties-common
 RUN apt-get update && LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
+RUN apt-get update && LC_ALL=C.UTF-8 add-apt-repository ppa:jason.grammenos.agility/php
 
 # Update cache and install Nginx
 RUN apt-get update && apt-get install nginx -y && usermod -u 1000 www-data
