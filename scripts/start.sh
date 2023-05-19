@@ -19,6 +19,13 @@ echo "xdebug.remote_host=${XDEBUG_IP}" >> /etc/php/7.1/fpm/conf.d/20-xdebug.ini
 
 echo "Deleting symfony cache"
 rm -rf /var/www/current/var/cache/
+
+rm -rf /var/log/symfony/ -R
+rm -rf /var/cache/symfony/ -R
+
+mkdir /var/log/symfony/
+mkdir /var/cache/symfony/
+
 chown www-data:www-data /var/log/symfony/ -R
 chown www-data:www-data /var/cache/symfony/ -R
 
