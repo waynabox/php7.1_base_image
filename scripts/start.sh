@@ -24,6 +24,9 @@ chown www-data:www-data /var/log/symfony/ -R
 chown www-data:www-data /var/cache/symfony/ -R
 chown www-data:www-data /var/www/current -R
 
+
+echo "Not installing vendors"
+
 echo "restarting services"
 sudo service php7.1-fpm start
 sudo nginx

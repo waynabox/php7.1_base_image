@@ -95,5 +95,3 @@ VOLUME /var/www/current
 VOLUME /usr/local/config
 # Set the current working directory
 WORKDIR /var/www/current
-# define entrypoint
-ENTRYPOINT ["/bin/bash", "/usr/local/bin/start.sh"]
