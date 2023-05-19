@@ -17,15 +17,11 @@ echo "xdebug.remote_autostart = 1" >>  /etc/php/7.1/fpm/conf.d/20-xdebug.ini
 echo "xdebug.remote_host=${XDEBUG_IP}" >> /etc/php/7.1/fpm/conf.d/20-xdebug.ini
 
 
-
 echo "Deleting symfony cache"
 rm -rf /var/www/current/var/cache/
 chown www-data:www-data /var/log/symfony/ -R
 chown www-data:www-data /var/cache/symfony/ -R
-chown www-data:www-data /var/www/current -R
 
-
-echo "Not installing vendors"
 
 echo "restarting services"
 sudo service php7.1-fpm start
